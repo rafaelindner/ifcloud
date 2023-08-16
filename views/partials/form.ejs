@@ -1,0 +1,49 @@
+<div id="content">
+    <div id="card">
+        <form id="json_form" action="/ifcloud/myForm" method="post">
+            <div class="line">
+                <h2>Formulario Json</h2>
+            </div>
+
+            <div class="line">
+                <label>Resource Type</label>
+                <select id="resource_type" name="resourceType">
+                    <option value="Observation">Observation</option>
+                    <option value="Patient">Patient</option>
+                </select>
+            </div>
+            
+            <div class="line">
+                <label>Resource Id</label>
+                <input id="resource_id" type="text" name="resourceId" />
+            </div>
+
+            <div class="line">
+                <label>Script Name</label>
+                <input id="script_name" type="text" name="scriptName" >
+            </div>
+
+            <div class="line">
+                <label>Component Index</label>
+                <input id="component_index" type="text" name="componentIndex">
+            </div>
+
+            <div class="line">
+                <label>Change Field</label>
+                <input id="change_field" type="text" name="changeField">
+            </div>
+
+            <div class="line">
+                <label>Return Only Fields Component</label>
+                <select id="only_component" name="onlyComponent">
+                    <option value="0">false</option>
+                    <option value="1">true</option>
+                </select>
+            </div>
+
+            <div id="send" class="line">
+                <input type="submit" id="btn_send" >
+            </div>
+        </form>
+    </div>
+</div>

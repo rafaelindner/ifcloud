@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/style.css">
+    <title>IFCloud Form Example</title>
+</head>
+<body>
+    <%- include('./partials/header.ejs') %>
+    
+
+    <div id="content">
+        <div id="card">
+            <div class="line">
+                <h2>Json Padrão</h2>
+            </div>
+
+            <% 
+            if(typeof response !== 'undefined') { 
+                console.log(response);
+            %>
+                <div id="json" class="line">
+                    <p>
+                        {<br>
+                            &nbsp;&nbsp;resourceType: '<%- response.resourceType %>',<br>
+                            &nbsp;&nbsp;id: '<%- response.id %>',<br>
+                            &nbsp;&nbsp;scriptName: '<%- response.scriptName %>',<br>
+                            &nbsp;&nbsp;component: {<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;index: '<%- response.component.index %>',<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;changeField: '<%- response.component.changeField %>',<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;returnOnlyFieldsComponent: <%- response.component.returnOnlyFieldsComponent %><br>
+                            &nbsp;&nbsp;}<br>
+                        }
+                    </p>
+                </div>
+
+                <div id="json" class="line">
+                    <p>
+                        Campo Original: <%- response.originalComponent %><br>
+                        Campo a ser Alterado: <%- response.component.changeField %><br>
+                    </p>
+                </div>
+            <% 
+            } 
+            %>
+        </div>
+
+        <div id="card">
+            <div class="line">
+                <h2>Campo Alterado</h2>
+            </div>
+
+            <%
+            if(typeof data !== 'undefined') {
+                console.log(data.valueSampledData);
+            %>
+            <div id="json" class="line">
+                <p>
+                    Period: <%- data.valueSampledData.period %><br>
+                    Factor: <%- data.valueSampledData.factor %><br>
+                    LowerLimit: <%- data.valueSampledData.lowerLimit %><br>
+                    UpperLimit: <%- data.valueSampledData.upperLimit %><br>
+                    Dimensions: <%- data.valueSampledData.dimensions %><br>
+                    Data: <%- data.valueSampledData.data %><br>
+                </p>
+            </div>
+            <%
+            }
+            %>
+        </div>
+    </div>
+
+    <%- include('./partials/footer.ejs') %>
+<body>
+</html>
