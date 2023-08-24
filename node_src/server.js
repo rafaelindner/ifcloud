@@ -8,7 +8,7 @@ const extensionRouter = require('./routers/ExtensionRouter');
 const operationRouter = require('./routers/OperationRouter');
 require("dotenv").config();
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.SERVER_PORT || 8080;
 
 let allowCrossDomain = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', "*");
