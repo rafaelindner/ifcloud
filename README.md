@@ -13,11 +13,11 @@
 from: ´ "start": "nodemon node_src/server.js" ´ <br>
 to: ´ "start": "node node_src/server.js" ´
 
-3. The file [node_src/Server.js](node_src/Server.js) , " server.js " needs to be lower case "s".
+3. The file [node_src/Server.js](node_src/server.js) , " server.js " needs to be lower case "s".
 
 ### - *$PORT ERROR;*
 
-1. In the [node_src/Server.js](node_src/Server.js), edit the line 11: <br>
+1. In the [node_src/Server.js](node_src/server.js), edit the line 11: <br>
 from: ´ const PORT = process.env.SERVER_PORT; ´ <br>
 to: ´ const PORT = process.env.SERVER_PORT || 8080; ´
    
