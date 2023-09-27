@@ -1,3 +1,4 @@
 pymongo==4.5.0
 biosppy==0.6.1
-numpy==1.26.0
+numpy==1.21.2
+
