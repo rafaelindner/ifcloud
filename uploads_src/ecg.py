@@ -1,4 +1,3 @@
-import biosppy
 import numpy as np
 from biosppy.signals import ecg
 
