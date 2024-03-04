@@ -1,7 +1,5 @@
 # Branch for Heroku Deploy!
 
-### LINK APLLICATION: https://cloudecg-929832b5a0ba.herokuapp.com/ifcloud/home
-
 ## Main errors found: (all erros fixed in this branch).
 
 ### - *Nodemon : not found;*
