@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/style.css">
+    <title>Home</title>
+</head>
+<body>
+    <header>
+        <img id="icon" src="/img/IF_CLOUD_ICON.png" alt="">
+        <a href="<%=process.env.HOME_PAGE%>">Home</a>
+        <a href="http://localhost:3007/if_cloud/file_uploader">Upload</a>
+        <a href="http://localhost:3007/if_cloud/json_form">Form</a>
+        <a href="">Info</a>
+    </header>
+    
+    <div id="content">
+        <div class="line_home">
+            <p class="home_tittle">Funcionamento da Aplicação</p>
+            <img id="img_aplication" src="/img/IFCLOUD_02.png" alt="">
+        </div>
+
+        <div class="line_home line_home_p">
+            <p class="home_tittle">API Routes</p>
+
+            <div class="home_card">
+                <p><b>1. Rota direta</b>:</p>
+                <p>Nesta rota é possivel rodar "scripts python" que estejam no servidor diretamente.</p>
+                <p><b>Rota = http://localhost:3007/if_cloud/run_script/script_name/:script_name</b></p>
+                <p># - ":script_name" = passar o nome de um script que exista no servidor.</p>
+            </div>
+
+            <div class="home_card">
+                <p><b>2. Rota utilizando Resource FHIR Patient:</b></p>
+                <p>Nesta rota é possivel rodar "scripts python" buscando por "Patient" na API CloudECG.</p>
+                <p><b>Rota = http://localhost:3007/if_cloud/run_script/patient_id/:id</b></p>
+                <p># - ":id" = passar um "id" de um "Patient" existente no servidor da API.</p>
+            </div>
+
+            <div class="home_card">
+                <p><b>3. Rota utilizando Resource FHIR Observation:</b></p>
+                <p>Nesta rota é possivel rodar "scripts python" buscando por "Observation" na API CloudECG.</p>
+                <p><b>Rota = http://localhost:3007/if_cloud/run_script/observation_id/:id</b></p>
+                <p># - ":id" = passar um "id" de um "Observation" existente no servidor da AP.</p>
+            </div>
+
+            <div class="home_card">
+                <p><b>4. Upload de arquivos:</b></p>
+                <p>Nesta rota é possivel upload de "scripts python" para o servidor IFCloud.</p>
+                <p><b>Rota = http://localhost:3007/if_cloud/file_uploader</b></p>
+                <p>Selecionar um script em python para fazer upload no servidor, somente arquivos ".py".</p>
+            </div>
+
+            <div class="home_card">
+                <p><b>5. Rotas utilizando Operations:</b></p>
+                <p>Nesta rota é possivel upload de "scripts python" para o servidor IFCloud.</p>
+                <p><b>Rota = http://localhost:3007/if_cloud/json_form</b></p>
+                <p>JSON padrão:</p>
+                <img id="img_json_form" src="/IMG/JSON_FORM.png" alt="">
+                <p>Selecionar um script em python para fazer o upload no servidor, somente arquivos ".py".</p>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <div class="foot_line">
+            <div class="foot_item foot_item_1">
+                <img class="foot_inst_logo" src="/img/IFSUL.png" alt="">
+            </div>
+            <div class="foot_item foot_item_2">
+                <img id="if_cloud_logo" src="/img/IF_CLOUD_LOGO.png" alt="">
+                <p>- Developed By Juliano Machado</p>
+            </div>
+            <div class="foot_item foot_item_1">
+                <img class="foot_inst_logo" src="/img/If4HEALTH.png" alt="">
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
