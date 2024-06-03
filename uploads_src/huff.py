@@ -66,15 +66,46 @@ def decode_file(root, s):
 	return ans + '\0'
 
 if __name__ == "__main__":
-    str = ""
+    # str = ""
 
-    if len(sys.argv) == 1:
-        str = "Não foi enviado nada!"
-    else:
-        for i, value in enumerate(sys.argv):
-            if i != 0:
-                str += value
+    # if len(sys.argv) == 1:
+    #     str = "Não foi enviado nada!"
+    # else:
+    #     for i, value in enumerate(sys.argv):
+    #         if i != 0:
+    #             str += value
 
+    # minHeap = []
+    # encodedString, decodedString = "", ""
+    # calcFreq(str, len(str))
+    # HuffmanCodes(len(str))
+
+    # for i in str:
+    #     encodedString += codes[i]
+
+    # print(encodedString)
+
+    
+    #Verifica se os dois parâmetros foram passados: path do arquivo para execução e path do arquivo com dados para execução(parâmetros)
+    if len(sys.argv) != 2:
+        print("Parâmetros inválidos!")
+        #Termina a execução do script
+        sys.exit(1)
+
+	#Pega o caminho do arquivo com os parâmetros da função(dados)
+    params_file = sys.argv[1]
+
+    try:
+        #Tenta abrir o arquivo para fazer a leitura dos dados
+        with open(params_file, 'r') as file:
+            #Atribui os dados do arquivo sem quebras de linhas e espaços em branco
+            str = file.read().strip()
+    except IOError:
+        #Caso ocorra algum erro acima, a exception é executada e o código tem sua execução terminada
+        print(f"Erro ao abrir o arquivo: {params_file}")
+        sys.exit(1)
+
+	#Parte do algoritmo já está implementado
     minHeap = []
     encodedString, decodedString = "", ""
     calcFreq(str, len(str))

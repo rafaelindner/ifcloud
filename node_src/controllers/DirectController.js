@@ -8,6 +8,8 @@ class DirectController{
             const run = new runScript();
             var scriptName = req.params.script_name;
 
+            console.log(req.params)
+
             if(run.runPythonScriptNotParams(scriptName)){
                 return res.send(run.runPythonScriptNotParams(scriptName));
             }else{

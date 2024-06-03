@@ -1,21 +1,59 @@
-const { execSync } = require('child_process');
+const {
+    execSync
+} = require('child_process');
+const path = require('path');
 const fs = require('fs');
 
 module.exports = class RunPythonScript {
- 
+
     runPythonScriptFromFile(scriptName, params) {
 
     }
 
-    runPythonScript(scriptName, params){
-        try{
-            var response = execSync(
-                "python ./uploads_src/"+scriptName+" "+params,
-                {encoding: "utf8" }
+    // runPythonScript(scriptName, params){
+    //     try{
+    //         var response = execSync(
+    //             "python3 ./uploads_src/"+scriptName+" "+params,
+    //             {encoding: "utf8" }
+    //         );
+    //         return response;
+    //     }catch(e){
+    //         console.log(e);
+    //     }
+    //     return false;
+    // }
+
+    runPythonScript(scriptName, params) {
+        const dirPath = './uploads_src/temp';
+        //Caminho do diretório para armazenar o txt temporário
+        const paramsFile = path.join(dirPath, 'params.txt');
+
+        try {
+            //Verifica se o arquivo existe, se não ele é criado
+            if (!fs.existsSync(dirPath)) {
+                fs.mkdirSync(dirPath, {
+                    recursive: true //Cria os diretórios caso não existam
+                });
+            }
+
+            //Escreve no arquivo txt os dados dos parâmetros da função
+            fs.writeFileSync(paramsFile, params, {
+                encoding: 'utf8'
+            });
+
+            //Executa o script py
+            const response = execSync(
+                `python3 ./uploads_src/${scriptName} ${paramsFile}`, {
+                    encoding: 'utf8'
+                }
             );
+
             return response;
-        }catch(e){
+        } catch (e) {
             console.log(e);
+        } finally {
+            //Quando tudo for executado sem erros, o arquivo txt temporário é excluído
+            fs.unlinkSync(paramsFile);
         }
         return false;
     }
@@ -23,8 +61,9 @@ module.exports = class RunPythonScript {
     runPythonScriptNotParams(scriptName) {
         try {
             var response = execSync(
-                `python ./uploads_src/${scriptName}`,
-                { encoding: 'utf8' }
+                `python3 ./uploads_src/${scriptName}`, {
+                    encoding: 'utf8'
+                }
             );
             return response;
         } catch (e) {
