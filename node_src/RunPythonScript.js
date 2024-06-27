@@ -24,9 +24,12 @@ module.exports = class RunPythonScript {
     // }
 
     runPythonScript(scriptName, params) {
+        //Caminho base para o upload
         const dirPath = './uploads_src/temp';
+        //Pega o timestamp atual
+        const timestamp = Date.now()
         //Caminho do diretório para armazenar o txt temporário
-        const paramsFile = path.join(dirPath, 'params.txt');
+        const paramsFile = path.join(dirPath, `params_${timestamp}.txt`);
 
         try {
             //Verifica se o arquivo existe, se não ele é criado
@@ -35,6 +38,9 @@ module.exports = class RunPythonScript {
                     recursive: true //Cria os diretórios caso não existam
                 });
             }
+
+            const timestamp = Date.now();
+            // const paramsFile = path.join(dirPath, `params_${timestamp}.txt`)
 
             //Escreve no arquivo txt os dados dos parâmetros da função
             fs.writeFileSync(paramsFile, params, {
@@ -52,6 +58,7 @@ module.exports = class RunPythonScript {
         } catch (e) {
             console.log(e);
         } finally {
+            console.log(paramsFile)
             //Quando tudo for executado sem erros, o arquivo txt temporário é excluído
             fs.unlinkSync(paramsFile);
         }

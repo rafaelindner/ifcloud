@@ -8,23 +8,25 @@ const extensionRouter = require('./routers/ExtensionRouter');
 const operationRouter = require('./routers/OperationRouter');
 require("dotenv").config();
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8000;
 
 let allowCrossDomain = (req, res, next) => {
   res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Headers', "*");
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 }
 
 app.set('view engine', 'ejs');
+app.use(allowCrossDomain);
 
 app.use(bp.json({limit: '50mb', extended: true}))
-  .use(bp.urlencoded({limit: '50mb',extended: true }))
-  .use(apiRouter)
-  .use(directRouter)
-  .use(extensionRouter)
-  .use(operationRouter)
-  .use(express.static(path.join(process.cwd(), "html_src")));
+   .use(bp.urlencoded({limit: '50mb', extended: true }))
+   .use(apiRouter)
+   .use(directRouter)
+   .use(extensionRouter)
+   .use(operationRouter)
+   .use(express.static(path.join(process.cwd(), "html_src")));
 
 app.listen(PORT, () => {
   console.log("server started on port: " + PORT);
