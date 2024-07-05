@@ -1,9 +1,9 @@
 import sys
 import heapq
 from collections import defaultdict
+from helpers.file_utils import read_params_file
 
 codes = {}
-
 freq = defaultdict(int)
 
 class MinHeapNode:
@@ -65,14 +65,7 @@ def decode_file(root, s):
     return ans + '\0'
 
 if __name__ == "__main__":
-    str = ""
-
-    if len(sys.argv) == 1:
-        str = "Não foi enviado nada!"
-    else:
-        for i, value in enumerate(sys.argv):
-            if i != 0:
-                str += value
+    str = read_params_file()
 
     print("Entrada antes da compressão:")
     print(str)

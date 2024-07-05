@@ -1,0 +1,3 @@
+venv/
+uploads_src/__pycache__/
+uploads_src/helpers/__pycache__/

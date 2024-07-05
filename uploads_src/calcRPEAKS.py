@@ -14,9 +14,8 @@ class NDArrayEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
 
-def main():
-    params_file = sys.argv[1]
-    data = read_params_file(params_file)
+if __name__ == '__main__':
+    data = read_params_file()
     signal = np.array([float(i) for i in data.split()])
     
     # process it and plot
@@ -24,10 +23,11 @@ def main():
     
     json_str = json.dumps({"filtered" : out['filtered'], 'rpeaks': out["rpeaks"],'bpm' :out["heart_rate"], "rate": 360}, cls=NDArrayEncoder, indent=4)
 
-    data = out["heart_rate"]
+    data = out["rpeaks"]
     
     string_data = ' '.join(map(str, data))
     print(string_data)
 
-if __name__ == '__main__':
-    main()
+
+# with open('joined_filtered_100m.txt', 'w') as convert_file: 
+#      convert_file.write(json_str)

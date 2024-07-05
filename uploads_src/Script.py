@@ -1,28 +1,20 @@
 import sys
 import json
 import logging
+from helpers.file_utils import read_params_file
 
-logging.basicConfig(level=logging.INFO)
 
-if len(sys.argv) == 1:
-    logging.info('Not arguments!')
-    print("Not arguments!")
-    sys.exit()
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    
+    data = read_params_file()
 
-text = ""
+    res = {
+        "Response": 200,
+        "Script Name": sys.argv[0],
+        "Message": data
+    }
 
-for value in sys.argv[1:]:
-    if len(text) == 0:
-        text += value
-    else:
-        text += " " + value
+    print(json.dumps(res))
 
-res = {
-    "Response": 200,
-    "Script Name": sys.argv[0],
-    "Message": text
-}
-
-print(json.dumps(res))
-
-sys.stdout.flush()
+    sys.stdout.flush()

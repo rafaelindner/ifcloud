@@ -1,21 +1,17 @@
 import sys
 import logging
 from biosppy.signals import ecg
+import numpy as np
+from helpers.file_utils import read_params_file
 
 logging.basicConfig(level=logging.INFO)
 
-if len(sys.argv) == 1:
-    logging.info('Not arguments!')
-    print("Not arguments!")
+if __name__ == "__main__":
+    data = read_params_file()
+    signal = np.array([float(i) for i in data.split()])
+
+    out = ecg.ecg(signal=signal, sampling_rate=360, show=False)
+
+    print(list(out[0]))
+
     sys.stdout.flush()
-    sys.exit()
-
-arrString = sys.argv[1].split(',')
-
-arrInt = [int(val) for val in arrString]
-
-out = ecg.ecg(signal=arrInt, sampling_rate=360, show=False)
-
-print(list(out[0]))
-
-sys.stdout.flush()
