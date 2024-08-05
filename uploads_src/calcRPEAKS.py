@@ -15,7 +15,8 @@ class NDArrayEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 if __name__ == '__main__':
-    data = read_params_file()
+    params_file = sys.argv[1]
+    data = read_params_file(params_file)
     signal = np.array([float(i) for i in data.split()])
     
     # process it and plot

@@ -39,13 +39,31 @@ module.exports = class RunPythonScript {
                 });
             }
 
-            const timestamp = Date.now();
-            // const paramsFile = path.join(dirPath, `params_${timestamp}.txt`)
-
             //Escreve no arquivo txt os dados dos parâmetros da função
             fs.writeFileSync(paramsFile, params, {
                 encoding: 'utf8'
             });
+
+//             // Caminho completo do script Python
+//             const scriptPath = `./uploads_src/${scriptName}`;
+            
+//             // Leitura do conteúdo do script original
+//             const originalScriptContent = fs.readFileSync(scriptPath, 'utf8');
+
+//             // Adição das linhas necessárias
+//             const modifiedScriptContent = `
+// from helpers.file_utils import read_params_file
+// import sys
+
+// params_file = sys.argv[1]
+// data = read_params_file(params_file)
+
+//             ${originalScriptContent}`;
+
+//             // Escreve o conteúdo modificado de volta no arquivo
+//             fs.writeFileSync(scriptPath, modifiedScriptContent, {
+//                 encoding: 'utf8'
+//             });
 
             //Executa o script py
             const response = execSync(
@@ -58,7 +76,7 @@ module.exports = class RunPythonScript {
         } catch (e) {
             console.log(e);
         } finally {
-            console.log(paramsFile)
+            // console.log(paramsFile)
             //Quando tudo for executado sem erros, o arquivo txt temporário é excluído
             fs.unlinkSync(paramsFile);
         }
