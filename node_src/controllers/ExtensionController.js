@@ -36,7 +36,11 @@ class ExtensionController{
     async runScriptByObservationId(req, res){
         try{
             const id = req.params.id;
+
             const { data } = await api.get('Observation/'+id);
+
+            return res.status(500).json(data);
+
 
             if(!!data.extension){
                 const valueString = data.extension[0].valueString;

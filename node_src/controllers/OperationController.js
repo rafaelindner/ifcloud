@@ -1,5 +1,8 @@
 const apiRequest = require("../ApiRequest");
 const runScript = require("../RunPythonScript");
+const path = require('path');
+const fs = require('fs').promises;
+
 
 class OperationController{
 
@@ -50,6 +53,30 @@ class OperationController{
         }
     }
 
+    static async createTXT(content) {
+        const directoryPath = path.join(__dirname, '..', 'texto_ecg');
+        const filePath = path.join(directoryPath, 'ECG.TXT');
+    
+        try {
+            // Verifica se o diretório existe, cria se não existir
+            await fs.mkdir(directoryPath, { recursive: true });
+    
+            // Verifica se o arquivo existe
+            try {
+                await fs.access(filePath);
+                // Se existir, substitui o conteúdo
+                await fs.writeFile(filePath, content);
+                console.log('Arquivo ecg foi modificado', filePath);
+            } catch (err) {
+                // Se não existir, cria o arquivo
+                await fs.writeFile(filePath, content);
+                console.log('Arquivo ecg foi criado', filePath);
+            }
+        } catch (error) {
+            console.error('Erro ao modificar ou criar o arquivo ecg.txt', error);
+        }
+    }
+    
     async myForm(req, res){
         try{
             const run = new runScript();
@@ -88,6 +115,15 @@ class OperationController{
                     return res.send("ERROR-03 !!! \"Index\" does not exist !!!");
                 }
 
+                // //POR AQUI A FUNCAO PRA CRIAR UM ARQUIVO ECG.TXT.... TODA VEZ QUE TRATA O FORM, SOBRE ESCREVE """ok"
+                // function creatTXT(){
+                    
+                // }
+
+                OperationController.createTXT(componentChange[changeField]);
+                
+                
+
                 if(componentChange[changeField]){
                     var scriptReturned = run.runPythonScript(scriptName, componentChange[changeField]);
                     if(scriptReturned){
@@ -111,7 +147,12 @@ class OperationController{
         }catch(e){
             return res.status(e.statusCode || 500).json(e);
         }
+        
     }
+    
 }
+
+
+
 
 module.exports = new OperationController();
