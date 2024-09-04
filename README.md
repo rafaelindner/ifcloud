@@ -2,60 +2,98 @@
   
 ![H2Cloud – Heterogeneous Health Cloud (Nuvem de Saúde Heterogênea)](./img/ifcloud-paper-CBIS2024.png)
 
-A Figura ilustra a visão  geral do ecossistema de saúde digital para monitoramento contínuo de biossinais com troca de recursos no padrão FHIR. As funcionalidades das APIs em nuvem para suportar projetos IoT e aplicações web de biossinais podem ser resumidas em CRUD e processamento. **IF-Cloud** - *API **\_F\_**HIR para **\_I\_**ntegração de projetos de saúde digital* - compõe o ecossistema como API de processamento.
+A Figura ilustra a visão  geral do ecossistema de saúde digital para monitoramento contínuo de biossinais com troca de recursos no padrão FHIR. As funcionalidades das APIs em nuvem para suportar projetos IoT e aplicações web de biossinais podem ser resumidas em CRUD (Criar/Ler/Atualizar/Excluir ) e Processamento. **IF-Cloud** - *API FHIR para Integração de projetos de saúde digital* - compõe o ecossistema como API de processamento.
 
-A Figura ilustra a visão geral de IF-Cloud: API FHIR para integração de projetos de saúde digital **H2Cloud**  – *Heterogeneous Health Cloud* (Nuvem de Saúde Heterogênea) e os variados tipos de aplicações web de saúde previstas na comunicação do ecossistema  de saúde digital. 
-A autenticação com [*SMART on FHIR*](https://hl7.org/fhir/smart-app-launch/) eh aplicada de diferentes formas dependendo da natureza da aplicação. Uma vez autenticadas, as aplicações *SMART on FHIR* trocam dados com H2Cloud usando recursos [*FHIR*](https://hl7.org/fhir/). O processamento e o armazenamento dos recursos FHIR habilitam a troca de dados entre as diferentes aplicações.
+IF-Cloud auomatiza a execução de scripts Python que tem upload realizado por meio de uma interface gráfica. IF-Cloud utiliza os dados dos recursos FHIR provenientes de alguma API de CRUD e retorna um outro recurso FHIR com os dados processados pelos scripts. Ou seja, IF-Cloud permite a inclusão de novas funcionalidades em ecossistemas de saúde digital mediante um upload de arquivos de script.
+
 
 ## Requisitos
 - NodeJS [https://nodejs.org/en/](https://nodejs.org/en/)
 - Python [https://www.python.org/](https://www.python.org/)
+- Pip - O gerenciador de pacotes do Python.
+- Git - Para clonar o repositório.
 - Aplicação IF-Cloud (este repositório)
 - Aplicação FHIR que realiza as operações CRUD
 
+
 IF-Cloud depende de uma API FHIR com operações CRUD para fornecer os dados a serem processados, pois não tem banco de dados. Diversas implementações de APIs FHIR em nuvem estão disponíveis para realizar as operações CRUD.
-Nós recomendamos a [nossa API FHIR especializada em biossinais](https://biosignalinfhir.if4health.com.br/api-docs/) e você encontra o código fonte [neste link](https://github.com/if4health/FASS-ECG). Alternativamente, [HAPI FHIR](https://hapi.fhir.org/baseR4/swagger-ui/) também pode ser utilizada.
+Nós recomendamos a [nossa API FHIR especializada em biossinais](https://biosignalinfhir.if4health.com.br/api-docs/) e você encontra o código fonte [neste link](https://github.com/if4health/FASS-ECG). Alternativamente, IF-Cloud também pode utilizar recursos FHIR da API pública de testes [HAPI FHIR](https://hapi.fhir.org/baseR4/swagger-ui/).
 
 
 ## Instalação
 1. Faca download deste repositorio
 ```sh
 git clone https://github.com/if4health/ifcloud .
+cd ifcloud/
 ```
 2. Configure variáveis de ambiente:
 
 | Rota | Descrição |
 |------|-----------|
-| `SERVER_PORT` | Porta do servidor |
 | `FHIR_API_URL` | URL da API FHIR que realiza as operações CRUD |
 
 
 3. Instale as dependencias de NodeJS para este projeto 
 ```sh
-cd ifcloud/
 npm install
 ```
 
-4. Instale as dependencias de NodeJS para este projeto 
+4. Instale as dependencias de Python para este projeto 
 ```sh
-cd ifcloud/
-npm install
+pip install -r requirements.txt
 ```
 
 
 ## Utilização
-Apos o set-up do ambiente escolhido, voce precisa destes comandos para executar
-No diretorio `h2cloud` execute:
+Após instalar todas as dependências, você pode iniciar a aplicação com:
 ```sh
-npm dev
+npm start
 ```
-Visualize o servidor rodando no navegador:
+Visualize o IF-Cloud rodando no navegador:
 ```sh
-http://localhost:${SERVER_PORT}/
+http://localhost:8000/ifcloud/home
 ```
 
+**Configuração de IF-Cloud para executar scripts** - IF-Cloud necessita do preenchimento de um JSON de configuração para fins de controle do fluxo de dados da interface e da automação dos scripts Python.
 
-## Rotas
+```json
+{
+    "resourceType": "Observation",
+    "id": "63f7f7a39c173811e7128d4c",
+    "scriptName": "huff.py",
+    "component":
+    {
+        "index": 2,
+        "changeField": "data",
+        "returnOnlyFieldsComponent": false
+    }
+}
+```
+
+- `resourceType` - tipo de Recurso FHIR que IF-Cloud deverá buscar na API de CRUD;
+- `id` - identificador do Recurso FHIR que a aplicação deverá buscar na API de CRUD;
+- `scriptName` - nome do script disponível no diretório Python SRC a ser executado.
+- `component` - Configura qual a chave do Recurso FHIR a ser buscado deve ser alterado ou retornado pelo script configurado em `scriptName`.
+	- `changeField` - determina qual a chave do Recurso FHIR deverá ser alterada;
+	- `index` - índice da chave `changeField` a ser alterado no Recurso FHIR;
+	- `returnOnlyFieldsComponent` - se IF-Cloud irá retornar somente os campos alterados ou todo o Recurso FHIR para o solicitante.
+
+
+![Interface de Usuário do IF-Cloud](./img/IF-Cloud-UI.png)
+
+Para facilitar a utilização, IF-Cloud disponibiliza uma interface de usuário.
+- **Item (A)** - Ao selecionar um script em python para fazer upload em IF-Cloud (menu Upload), ele fica salvo em uma lista de scipts disponiveis e pode ser executado a qualquer momento.
+- **Item (B)** - Uma das formas de carregar o JSON de configuração de IF-Cloud é clicando no menu Form da UI e preenchendo o formulário.
+- **Item (C)** - Ao enviar o formulário, IF-Cloud executa o script selecionado e redireciona uma página informativa mostrando o resultado da execucao do script conforme as configurações do JSON de configuração.
+
+
+
+## [TO DO] Rotas
+
+**SEGUE DAQUI...**
+Aqui apresento as rotas que implementam as telas
+
+
 | Rota               | Metodo | Descricao                                                                                                  |
 |--------------------|--------|------------------------------------------------------------------------------------------------------------|
 | `/.well-known/smart-configuration` | GET | Mostra as configurações para autenticação |
@@ -72,7 +110,7 @@ http://localhost:${SERVER_PORT}/
 ![Fluxo de autenticação SMART on FHIR implementado na nuvem H2Cloud para (a) aplicações com interface de usuário e para (b) aplicações em dispositivos IoT.](./img/H2Cloud-flows.png)
 
 
-## Deploy na AWS
+## [TO DO] Deploy na AWS
 #### [Este vídeo](https://www.youtube.com/watch?v=Mb1zueb-s5k) demonstra como fazer Deploy de H2Cloud na AWS.
 
 1. No serviço AWS IAM, na aba Usuários, clique no botão *adicionar um usuário*:
