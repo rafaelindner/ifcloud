@@ -88,54 +88,28 @@ Para facilitar a utilização, IF-Cloud disponibiliza uma interface de usuário.
 
 
 
-## [TO DO] Rotas
+## Rotas
 
-**SEGUE DAQUI...**
-Aqui apresento as rotas que implementam as telas
+IF-Cloud oferece duas categorias de rotas na chamada dos scripts carregados na nuvem. 
+
+A chamada por **rota direta** é indicada para testes de funcionamento do próprio script pelo usuário/desenvolvedor. Esta abordagem não tem acesso aos recursos da API de CRUD e também não gera recursos FHIR, pois IF-Cloud faz apenas a execução de um script Python disponível no diretório. 
+
+A chamada na **rota principal** é o método de execução dos scripts cuja resposta pode ser retornada em um recurso FHIR. Sempre que IF-Cloud receber uma requisição na rota principal, é necessário buscar os dados salvos na API de CRUD para serem sobrescritos com processamento intermediado pelos scripts salvos em IF-Cloud. 
 
 
+***Pendencias que descobri ao desenvolver o README.md:***
+1. refatorar IF-Cloud para que a requisicao `POST /run_script/operation/` seja um `POST /run_script/operation/:id`. Esta certo no artigo, mas certo no codigo-fonte.
+2. fazer o menu about da UI de ifcloud
+
+ 
 | Rota               | Metodo | Descricao                                                                                                  |
 |--------------------|--------|------------------------------------------------------------------------------------------------------------|
-| `/.well-known/smart-configuration` | GET | Mostra as configurações para autenticação |
-| `/auth/register` | GET | Inicia o processo de autenticação |
-| `/auth/login` | GET | Exibe a tela de login |
-| `/auth/login` | POST | Efetua o login do usuário, sendo paciente ou médico |
-| `/auth/authorize` | GET | Exibe a tela das permissões solicitadas pela aplicação |
-| `/auth/authorize` | POST | Confirma a autorização da aplicação pelo usuário |
-| `/auth/list` | GET | Exibe lista de pacientes do login do médico |
-| `/auth/select` | POST | Seleciona o paciente para exibir os dados |
-| `/auth/token` | POST | Gera um token com os grant_types: 'authorization_code' e 'client_credentials' |
+| `/run_script/direct/:script_name` | GET | Executa o script `script_name` salvo em IF-Cloud sem parâmetros de entrada |
+| `/run_script/direct/params` | POST | Executa um script salvo em IF-Cloud com parâmetros de entrada `{"scriptName": ":script_name", "params": ":params_list}` |
+| `/run_script/operation/:id` | POST | IF-Cloud executa um script de acordo com o JSON de configuração e modifica o conteúdo de uma chave de um recurso FHIR proveniente da API de CRUD `$(FHIR_API_URL)` |
+| `/ifcloud/myForm` | POST | envia o JSON de configuração para IF-Cloud sem necessitar de UI |
 
 
-![Fluxo de autenticação SMART on FHIR implementado na nuvem H2Cloud para (a) aplicações com interface de usuário e para (b) aplicações em dispositivos IoT.](./img/H2Cloud-flows.png)
 
-
-## [TO DO] Deploy na AWS
-#### [Este vídeo](https://www.youtube.com/watch?v=Mb1zueb-s5k) demonstra como fazer Deploy de H2Cloud na AWS.
-
-1. No serviço AWS IAM, na aba Usuários, clique no botão *adicionar um usuário*:
-	- **Passo 1**: Escolha um nome de usuário e selecione como *tipo de credencial* a opção *Chave de acesso: acesso programático*.
-	- **Passo 2**: Clique no botão *Anexar políticas existentes de forma direta* e selecione a política *AmazonS3FullAccess*.
-	- **Passo 3**: Nada a fazer.
-	- **Passo 4**: Etapa de revisão de escolhas.
-	- **Passo 5**: Você terá criado as chaves para preencher as variáveis de ambiente  `AWS_ACCESS_KEY` e `AWS_SECRET_KEY`.
-
-2. No serviço AWS S3, clique no botão *Criar bucket*. Escolha um nome e uma região AWS e **mantenha bloqueado todo acesso público**. Restante de opções deixe tudo padrão. Agora você tem condições de preencher as variáveis de ambiente `AWS_BUCKET_NAME` e `AWS_BUCKET_REGION`
-
-3. Abra um terminal Unix e gere as chaves públicas e privadas em sua máquina local.
-```sh
-openssl genrsa -out private.pem 2048
-openssl rsa -in ./private.pem -outform PEM -pubout -out public.pem
-```
-
-4. No seu recém criado bucket S3, clique em *Carregar* e faça upload dos arquivos private.pem e public.pem. 
-
-5. Neste exemplo, as configurações das demais variáveis de ambiente ficam assim: `SERVER_PORT=8080`, `OAUTH_PUB=public.pem` e `OAUTH_PRIVATE=private.pem`. 
-
-6. Nos arquivos deste repositório, crie um ZIP contendo os diretorios `img`, `Node_src`, `node_modules` e `views` e os arquivos `.env` e `package.json`.
-
-7. No serviço AWS Elastic Beanstalk, clique no botão *Criar aplicativo*. Escolha a Plataforma NodeJS e selecione a opção de *Fazer upload de código*. Envie o seu arquivo ZIP recém criado.
-
-8. Após o deploy de sua aplicação, você terá uma URL para acessar sua aplicação. Essa URL é necessária para a variável de ambiente `DEFAULT_URL`. Clique em *Configurações* e clique no botão *Editar* da caixa *Software*. Em *Propriedades do ambiente*, configure `DEFAULT_URL` com a URL gerada pelo AWS Elastic Beanstalk.
-
-9. Sua aplicação vai reiniciar e estará pronta para o uso. Ufa!!
+## [TO DO] Deploy na AWS - VAMOS FAZER?
+#### [Este vídeo](https://www.youtube.com/watch?v=Mb1zueb-s5k) demonstra como fazer Deploy de IF-Cloud na AWS.

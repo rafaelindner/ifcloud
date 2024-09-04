@@ -143,7 +143,7 @@ class OperationController{
                 return res.render('form_example', {data: components[componentIndex], response});
             }
 
-            return res.render('form_example', {data, response});
+            return res.send({data, response});
         }catch(e){
             return res.status(e.statusCode || 500).json(e);
         }
