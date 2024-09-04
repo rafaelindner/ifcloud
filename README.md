@@ -1,6 +1,6 @@
 # Projeto IF-Cloud
   
-![H2Cloud – Heterogeneous Health Cloud (Nuvem de Saúde Heterogênea)](./img/ifcloud-paper-CBIS2024.png)
+![H2Cloud – Heterogeneous Health Cloud (Nuvem de Saúde Heterogênea)](./img/IF-Cloud-paper-CBIS2024.png)
 
 A Figura ilustra a visão  geral do ecossistema de saúde digital para monitoramento contínuo de biossinais com troca de recursos no padrão FHIR. As funcionalidades das APIs em nuvem para suportar projetos IoT e aplicações web de biossinais podem ser resumidas em CRUD (Criar/Ler/Atualizar/Excluir ) e Processamento. **IF-Cloud** - *API FHIR para Integração de projetos de saúde digital* - compõe o ecossistema como API de processamento.
 
