@@ -1,6 +1,6 @@
 # Projeto IF-Cloud
   
-![H2Cloud – Heterogeneous Health Cloud (Nuvem de Saúde Heterogênea)](./img/IF-Cloud-paper-CBIS2024.png)
+![IF-Cloud (API FHIR para Integração de projetos de saúde digital)](./img/IF-Cloud-paper-CBIS2024.png)
 
 A Figura ilustra a visão  geral do ecossistema de saúde digital para monitoramento contínuo de biossinais com troca de recursos no padrão FHIR. As funcionalidades das APIs em nuvem para suportar projetos IoT e aplicações web de biossinais podem ser resumidas em CRUD (Criar/Ler/Atualizar/Excluir ) e Processamento. **IF-Cloud** - *API FHIR para Integração de projetos de saúde digital* - compõe o ecossistema como API de processamento.
 
@@ -54,12 +54,12 @@ Visualize o IF-Cloud rodando no navegador:
 http://localhost:8000/ifcloud/home
 ```
 
-**Configuração de IF-Cloud para executar scripts** - IF-Cloud necessita do preenchimento de um JSON de configuração para fins de controle do fluxo de dados da interface e da automação dos scripts Python.
+**JSON de Configuração** de IF-Cloud para fins de controle do fluxo de dados da interface e da automação dos scripts Python.
 
 ```json
 {
     "resourceType": "Observation",
-    "id": "63f7f7a39c173811e7128d4c",
+    "id": ":id_from_CRUD_API",
     "scriptName": "huff.py",
     "component":
     {
@@ -100,16 +100,34 @@ A chamada na **rota principal** é o método de execução dos scripts cuja resp
 ***Pendencias que descobri ao desenvolver o README.md:***
 1. refatorar IF-Cloud para que a requisicao `POST /run_script/operation/` seja um `POST /run_script/operation/:id`. Esta certo no artigo, mas certo no codigo-fonte.
 2. fazer o menu about da UI de ifcloud
+3. tenho que testar as rotas amanha
 
  
 | Rota               | Metodo | Descricao                                                                                                  |
 |--------------------|--------|------------------------------------------------------------------------------------------------------------|
 | `/run_script/direct/:script_name` | GET | Executa o script `script_name` salvo em IF-Cloud sem parâmetros de entrada |
-| `/run_script/direct/params` | POST | Executa um script salvo em IF-Cloud com parâmetros de entrada `{"scriptName": ":script_name", "params": ":params_list}` |
-| `/run_script/operation/:id` | POST | IF-Cloud executa um script de acordo com o JSON de configuração e modifica o conteúdo de uma chave de um recurso FHIR proveniente da API de CRUD `$(FHIR_API_URL)` |
-| `/ifcloud/myForm` | POST | envia o JSON de configuração para IF-Cloud sem necessitar de UI |
+| `/run_script/direct/params` | POST | Executa um script salvo em IF-Cloud com parâmetros de entrada `{"scriptName": ":script_name", "params": ":params_list"}` |
+| `/run_script/operation` | POST | IF-Cloud executa um script de acordo com o **JSON de configuração** e modifica o conteúdo de uma chave de um recurso FHIR proveniente da API de CRUD `$(FHIR_API_URL)` |
 
 
+## Casos de teste
 
-## [TO DO] Deploy na AWS - VAMOS FAZER?
-#### [Este vídeo](https://www.youtube.com/watch?v=Mb1zueb-s5k) demonstra como fazer Deploy de IF-Cloud na AWS.
+Para mostrar as possibilidades de IF-Cloud, nós coletamos um trecho de um eletrocardiograma (ECG) do (PhysioNet)[https://physionet.org/], um repositório de dados médicos disponíveis gratuitamente.
+
+O diretorio `testfiles` contém o seguinte material para iniciantes no IF-Cloud: 
+```sh
+├── calcBPM.py
+├── config-ifcloud.json
+├── FHIR-Observation-1-lead-ECG-snippet.json
+├── HelloWorld.py
+└── params-route-direct.json
+```
+
+1. O arquivo `FHIR-Observation-1-lead-ECG-snippet.json` contém um trecho de um ECG de uma derivação descrito como um recurso FHIR Observation para ser inserido em uma API FHIR.
+2. O script `HelloWorld.py` serve para você testar a implantação de IF-cloud na nuvem ou no localhost na rota `GET $(URL_IFCLOUD)/run_script/direct/HelloWorld.py`
+3. O script `calcBPM.py` realiza o cálculo da frequência cardíaca de um determinado ECG. **Entrada**: Uma string com as amostras descrevendo o sinal temporal do ECG. **Saída**: Uma string com os valores da variância da frequência cardíaca em BPM (batimento por minuto).
+4. Utilize `params-route-direct.json` no corpo da requisição `POST $(URL_IFCLOUD)/run_script/direct/params` que IF-Cloud vai retornar o vetor de BPMs do ECG
+5. Utilize `config-ifcloud.json` no corpo da requisição `POST $(URL_IFCLOUD)/run_script/operation` que IF-Cloud vai retornar o vetor de BPMs do ECG descrito como um FHIR Observation. 
+	- Não esqueça de substituir `:id_from_CRUD_API` pelo ID que a API FHIR respondeu apos o `POST` de `FHIR-Observation-1-lead-ECG-snippet.json`.
+
+

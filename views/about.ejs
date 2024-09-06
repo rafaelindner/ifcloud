@@ -6,15 +6,35 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="/style.css">
-    <title>IFCloud About</title>
+    <title>IF-Cloud About</title>
 </head>
 <body>
     <%- include('./partials/header.ejs') %>
 
     <div id="content">
-        <h3>Aqui eu vou escrever algumas coisas sobre a minha nuvem</h3>
+
+        <div class="line_home line_home_p">
+            <p class="home_tittle">Sobre</p>
+
+            <div class="home_card">
+                <p>IF-Cloud está vinculado aos projetos do grupo de pesquisa <a href="https://if4health.netlify.app/" target="_blank">IF4Health</a>.</p>
+                <p><b>Breve histórico do desenvolvimento</b>:</p>
+                <p>O início do desenvolvimento de IF-Cloud foi realizado por Juliano Machado Vieira e utilizado como requisito para defesa do Trabalho de Conclusão do Curso de Tecnologias em Sistemas para Internet no IFSul campus Charqueadas em 18/07/2023.</p>
+                <p>Em seguida, IF-Cloud teve uma série de melhorias que deixaram a API funcional e totalmente integrada a outras aplicações de saúde digital. A versão atual foi submetida e aprovada para publicação no XX Congresso Brasileiro de Informática em Saúde - CBIS'24</p>
+            </div>
+
+            <div class="home_card">
+                <p><b>Artigo</b>:</p>
+                <p>O artigo científico referente ao IF-Cloud será apresentado oralmente no <a href="https://sbis.org.br/cbis-2024-sobre-o-congresso/" target="_blank">CBIS'24</a> e posteriormente publicado no <a href="https://jhi.sbis.org.br/" target="_blank">Journal of Health Informatics</a>.</p>
+                <p><b>Código-fonte e Tutorial</b>:</p>
+                <p>O <a href="https://github.com/if4health/ifcloud" target="_blank">código-fonte de IF-Cloud</a> é aberto e gratuito e está disponível no GitHub do Grupo de Pesquisa IF4Health. O repositório contém a documentação padrão de um software. Além disso, arquivos para teste estão disponíveis vinculados a um pequeno tutorial para iniciantes no IF-Cloud.</p>
+            </div>
+
+        </div>
+
     </div>
 
     <%- include('./partials/footer.ejs') %>
 <body>
 </html>
+
