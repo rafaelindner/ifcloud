@@ -112,9 +112,9 @@ A chamada na **rota principal** é o método de execução dos scripts cuja resp
 
 ## Casos de teste
 
-Para mostrar as possibilidades de IF-Cloud, nós coletamos um trecho de um eletrocardiograma (ECG) do (PhysioNet)[https://physionet.org/], um repositório de dados médicos disponíveis gratuitamente.
+Para mostrar as possibilidades de IF-Cloud, nós coletamos um trecho de um eletrocardiograma (ECG) do [PhysioNet](https://physionet.org/), um repositório de dados médicos disponíveis gratuitamente.
 
-O diretorio `testfiles` contém o seguinte material para iniciantes no IF-Cloud: 
+O diretório `testfiles` contém o seguinte material para iniciantes no IF-Cloud: 
 ```sh
 ├── calcBPM.py
 ├── config-ifcloud.json
@@ -123,11 +123,11 @@ O diretorio `testfiles` contém o seguinte material para iniciantes no IF-Cloud:
 └── params-route-direct.json
 ```
 
-1. O arquivo `FHIR-Observation-1-lead-ECG-snippet.json` contém um trecho de um ECG de uma derivação descrito como um recurso FHIR Observation para ser inserido em uma API FHIR.
+1. O arquivo `FHIR-Observation-1-lead-ECG-snippet.json` contém um trecho de um ECG de uma derivação descrito como um recurso FHIR Observation para ser inserido em `$(FHIR_API_URL)`.
 2. O script `HelloWorld.py` serve para você testar a implantação de IF-cloud na nuvem ou no localhost na rota `GET $(URL_IFCLOUD)/run_script/direct/HelloWorld.py`
 3. O script `calcBPM.py` realiza o cálculo da frequência cardíaca de um determinado ECG. **Entrada**: Uma string com as amostras descrevendo o sinal temporal do ECG. **Saída**: Uma string com os valores da variância da frequência cardíaca em BPM (batimento por minuto).
 4. Utilize `params-route-direct.json` no corpo da requisição `POST $(URL_IFCLOUD)/run_script/direct/params` que IF-Cloud vai retornar o vetor de BPMs do ECG
 5. Utilize `config-ifcloud.json` no corpo da requisição `POST $(URL_IFCLOUD)/run_script/operation` que IF-Cloud vai retornar o vetor de BPMs do ECG descrito como um FHIR Observation. 
-	- Não esqueça de substituir `:id_from_CRUD_API` pelo ID que a API FHIR respondeu apos o `POST` de `FHIR-Observation-1-lead-ECG-snippet.json`.
+	- Não esqueça de substituir `:id_from_CRUD_API` pelo ID que a API FHIR responder após o `POST` de `FHIR-Observation-1-lead-ECG-snippet.json`.
 
 
