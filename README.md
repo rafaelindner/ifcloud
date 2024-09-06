@@ -63,7 +63,7 @@ http://localhost:8000/ifcloud/home
     "scriptName": "huff.py",
     "component":
     {
-        "index": 2,
+        "index": "2",
         "changeField": "data",
         "returnOnlyFieldsComponent": false
     }
@@ -95,12 +95,6 @@ IF-Cloud oferece duas categorias de rotas na chamada dos scripts carregados na n
 A chamada por **rota direta** é indicada para testes de funcionamento do próprio script pelo usuário/desenvolvedor. Esta abordagem não tem acesso aos recursos da API de CRUD e também não gera recursos FHIR, pois IF-Cloud faz apenas a execução de um script Python disponível no diretório. 
 
 A chamada na **rota principal** é o método de execução dos scripts cuja resposta pode ser retornada em um recurso FHIR. Sempre que IF-Cloud receber uma requisição na rota principal, é necessário buscar os dados salvos na API de CRUD para serem sobrescritos com processamento intermediado pelos scripts salvos em IF-Cloud. 
-
-
-***Pendencias que descobri ao desenvolver o README.md:***
-1. refatorar IF-Cloud para que a requisicao `POST /run_script/operation/` seja um `POST /run_script/operation/:id`. Esta certo no artigo, mas certo no codigo-fonte.
-2. fazer o menu about da UI de ifcloud
-3. tenho que testar as rotas amanha
 
  
 | Rota               | Metodo | Descricao                                                                                                  |
