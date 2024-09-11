@@ -8,45 +8,44 @@
         <p class="home_tittle">API Routes</p>
 
         <div class="home_card">
-            <p><b>1. Rota direta</b>:</p>
-            <p>Nesta rota é possivel rodar "scripts python" que estejam no servidor diretamente.</p>
-            <p><b>Rota = <%=process.env.API_URL%>/run_script/direct/:script_name</b></p>
-            <p># - ":script_name" = passar o nome de um script que exista no servidor.</p>
-        </div>
-
-        <div class="home_card">
-            <p><b>2. Rota utilizando Resource FHIR Patient:</b></p>
-            <p>Nesta rota é possivel rodar "scripts python" buscando por "Patient" na API CloudECG.</p>
-            <p><b>Rota = <%=process.env.API_URL%>/run_script/patient/:id</b></p>
-            <p># - ":id" = passar um "id" de um "Patient" existente no servidor da API.</p>
-        </div>
-
-        <div class="home_card">
-            <p><b>3. Rota utilizando Resource FHIR Observation:</b></p>
-            <p>Nesta rota é possivel rodar "scripts python" buscando por "Observation" na API CloudECG.</p>
-            <p><b>Rota = <%=process.env.API_URL%>/if_cloud/run_script/observation/:id</b></p>
-            <p># - ":id" = passar um "id" de um "Observation" existente no servidor da AP.</p>
-        </div>
-
-        <div class="home_card">
-            <p><b>4. Upload de arquivos:</b></p>
-            <p>Na aba "Upload" é possivel fazer o upload de scripts Python, eles ficaram salvos
-            na nuvem e poderam ser acessados a qualquer momento.
+            <p><b>Para que serve?</b>:</p>
+            <p>IF-Cloud auomatiza a execução de scripts Python que tem upload realizado por meio desta interface gráfica. IF-Cloud utiliza os dados dos recursos FHIR provenientes de alguma API de CRUD e retorna um outro recurso FHIR com os dados processados pelos scripts. IF-Cloud adiciona operações que são executadas esporadicamente no ecossistema de aplicações saúde digital.</p>
+            <p>
+                <b>Este deploy de IF-Cloud está vincula a API FHIR da URL:
+                    <a href="<%=process.env.FHIR_API_URL%>" target="_blank"><%=process.env.FHIR_API_URL%></a>
+                </b>
             </p>
-            <p>Selecionar um script em python para fazer upload no servidor, somente arquivos ".py".</p>
         </div>
 
         <div class="home_card">
-            <p><b>5. Rotas utilizando Operations:</b></p>
-            <p>Nesta rota é possivel rodar scripts Python que estejam na nuvem, interagindo com 
-                os Resources vindos da CloudECG, como Patient e Observation.
+            <p><b>Upload de arquivos:</b></p>
+            <p>
+                Na aba "Upload" é possivel fazer o upload de scripts Python, eles ficaram salvos na nuvem e poderam ser acessados a qualquer momento.
             </p>
-            <p><b>Rota = <%=process.env.API_URL%>/run_script/operation</b></p>
-            <p>Esta rota esta acessivel e pode ser usada atraves de requisições HTTP, enviando
-                um JSON padrão, criado especialmente para esta aplicação.
+            <p>
+                Selecionar um script em python para fazer upload no servidor, somente arquivos ".py".
             </p>
-            <p>Este JSON permite setar algumas informações importantes para o funcionamento da engine.</p>
-            <p>JSON padrão:</p>
+            <p>
+                Antes do upload, todos os scripts Python vão precisar adicionar:
+                <ol>
+                    <li>importar <code>from helpers.file_utils import read_params_file</code></li>
+                    <li>carregar a entrada de dados com <code>data = read_params_file(params_file)</code></li>
+                </ol> 
+                Veja exemplos de scripts Python com essas mudanças no diretório <code>testfiles</code> do <a href="https://github.com/if4health/ifcloud" target="_blank">código-fonte de IF-Cloud</a>
+
+            </p>
+        </div>
+
+        <div class="home_card">
+            <p><b>Configurando IF-Cloud:</b></p>
+            <p>No menu "Form" é possivel configurar IF-Cloud para rodar scripts Python que estejam na nuvem, interagindo com 
+                os recursos FHIR vindos da API FHIR, como Patient e Observation.
+            </p>
+            <p><b>JSON de Configuração</b></p>
+            <p>
+                Preenchendo o formulário, IF-Cloud configura um JSON padrão criado especialmente para esta aplicação. Este JSON permite setar algumas informações importantes para o funcionamento da engine.
+                O JSON também pode ser enviado diretamente - sem interface gráfica - via requisição POST para a rota /run_script/operation
+            </p>
             <img id="img_json_form" src="/IMG/JSON_FORM.png" alt="">
             <p><b>- resourceType:</b> do tipo "String", tipo de resource, pode ser Observation ou Patiente.</p>
             <p><b>- id:</b> do tipo "String", id do resource salvo na CloudECG.</p>
@@ -63,9 +62,6 @@
                 do resource alterado ou somente do componente.
             </p>
 
-            <p>Também é possivel utilizar o JSON padrão pela aba "Form", lá estara um formulário
-                que desmonstrara a utilização do sistema.
-            </p>
         </div>
 
     </div>

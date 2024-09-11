@@ -24,7 +24,6 @@ Nós recomendamos a [nossa API FHIR especializada em biossinais](https://biosign
 1. Faca download deste repositorio
 ```sh
 git clone https://github.com/if4health/ifcloud .
-cd ifcloud/
 ```
 2. Configure variáveis de ambiente:
 
