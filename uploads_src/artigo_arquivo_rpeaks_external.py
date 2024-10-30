@@ -297,12 +297,7 @@ def main():
   #Identificando batida através de predição
   vetor_final_predic = tpSig_predc(predic)
 
-  print("\n\n\n ")
   print(vetor_final_predic)
-
-  # path_file = "params_1729857396734.txt"
-  # data = read_params_file(path_file)
-
 
 if __name__ == "__main__":
   main()
