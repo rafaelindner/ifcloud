@@ -3,6 +3,7 @@ const {
 } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const { log } = require('console');
 
 module.exports = class RunPythonScript {
 
@@ -24,6 +25,10 @@ module.exports = class RunPythonScript {
     // }
 
     runPythonScript(scriptName, params) {
+        console.log("\n\n\n\n");
+        console.log(params);
+        
+        
         //Caminho base para o upload
         const dirPath = './uploads_src/temp';
         //Pega o timestamp atual
