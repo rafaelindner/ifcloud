@@ -1,57 +1,95 @@
+const { log } = require("console");
 const apiRequest = require("../ApiRequest");
 const runScript = require("../RunPythonScript");
 const path = require('path');
+const { validateComponentDataIsEmpty } = require("../operations/validations/arrayValidation");
+const ValidationError = require("../operations/erros/ValidationError");
 const fs = require('fs').promises;
 
 
 class OperationController{
-
     async operationStarter(req, res){
         try{
             const run = new runScript();
+            const arrFilteredComponents = [];
 
-            var resourceType = req.body.resourceType;
-            var id = req.body.id;
-            var scriptName = req.body.scriptName;
-            var componentIndex = req.body.component.index;
-            var changeField = req.body.component.changeField;
-            var returnOnlyFieldComponent = req.body.component.returnOnlyFieldsComponent;
+            const resourceType = req.body.resourceType;
+            const id = req.body.id;
+            const scriptName = req.body.scriptName;
+            const returnOnlyFieldsComponent = req.body.returnOnlyFieldsComponent;
+            const userComponents = req.body.components;
+
+            // Valida os dados do array de componentes: Estão vazios e seus tipos
+            validateComponentDataIsEmpty(userComponents);
 
             const { data } = await apiRequest.get(resourceType+'/'+id);
+            const components = data.component;
 
-            var components = data.component;
+            
 
-            if(componentIndex && changeField){
-                if(components[componentIndex]){
-                    var componentChange = components[componentIndex]['valueSampledData'];
-                }else{
-                    return res.send("!!! \"Index\" does not exist !!!");
+            userComponents.forEach(userComponent => {
+                
+                if (components[userComponent.index]) {
+                    var componentChange = components[userComponent.index]['valueSampledData'];
+                }else {
+                    throw new ValidationError("!!! \"Index\" does not exist !!!");
                 }
 
-                if(componentChange[changeField]){
-                    var scriptReturned = run.runPythonScript(scriptName, componentChange[changeField]);
+                if(componentChange[userComponent.changeField]){
+                    var scriptReturned = run.runPythonScript(scriptName, componentChange[userComponent.changeField]);
                     if(scriptReturned){
                         scriptReturned = scriptReturned.replace(/(\r\n|\n|\r)/gm, "");
                     }else{
-                        return res.send("!!! python script return error !!!")
+                        throw new ValidationError("!!! python script return error !!!")
                     }
-                    componentChange[changeField] = scriptReturned;
+                    componentChange[userComponent.changeField] = scriptReturned;
                 }else{
-                    return res.send("ERROR-04 !!! \"ChangeField\" does not exist !!!");
+                    throw new ValidationError("ERROR-04 !!! \"ChangeField\" does not exist !!!");
                 }
-            }else{
-                return res.send("!!! Empty \"Index\" or \"ChangeField\" field !!!");
-            }
 
-            if(returnOnlyFieldComponent){
-                return res.json(components[componentIndex]);
+                if(returnOnlyFieldsComponent){
+                    arrFilteredComponents.push(components[userComponent.index]);
+                }
+            });
+
+            if(returnOnlyFieldsComponent){
+                return res.json(arrFilteredComponents);
             }
 
             return res.json(data);
+
+            return res.status(200).send("Passou em tudo!");
         }catch(e){
-            return res.status(e.statusCode || 500).json(e);
+            return res.status(e.statusCode || 500).json({
+                error: e.message || "Erro desconhecido",
+            });
         }
     }
+
+    // async operationStarter(req, res) {
+    //     try {
+    //         const run = new runScript();
+    
+    //         const resourceType = req.body.resourceType;
+    //         const id = req.body.id;
+    //         const scriptName = req.body.scriptName;
+    //         const userComponents = req.body.components;
+    
+    //         const { data } = await apiRequest.get(resourceType + '/' + id);
+    
+    //         const components = data.component;
+    
+    //         // Valida os dados recebidos no request
+    //         validateComponentDataIsEmpty(userComponents);
+    
+    //         return res.status(200).send("Passou em tudo!");
+    //     } catch (e) {
+    //         return res.status(e.statusCode || 500).json({
+    //             error: e.message || "Erro desconhecido",
+    //         });
+    //     }
+    // }
+    
 
     static async createTXT(content) {
         const directoryPath = path.join(__dirname, '..', 'texto_ecg');
@@ -122,8 +160,6 @@ class OperationController{
 
                 OperationController.createTXT(componentChange[changeField]);
                 
-                
-
                 if(componentChange[changeField]){
                     var scriptReturned = run.runPythonScript(scriptName, componentChange[changeField]);
                     if(scriptReturned){
