@@ -1,6 +1,6 @@
 const HandleError = require("../erros/HandleError");
-const runScript = require("../../RunPythonScript")
-
+const runScript = require("../../RunPythonScript");
+const fs = require('fs/promises');
 
 module.exports.getComponentChange = (components, index) => {
     if (components[index]) {
@@ -9,10 +9,11 @@ module.exports.getComponentChange = (components, index) => {
     throw new HandleError('Index does not exists!');
 }
 
-// Função para processar os dados
-module.exports.processComponentChange = (componentChange, userComponent, scriptName) => {
+module.exports.processComponentChange = async (componentChange, userComponent, scriptName) => {
     if (componentChange[userComponent.changeField]) {
-        const scriptReturned = this.runScriptPython(scriptName, componentChange[userComponent.changeField]);
+        await verifyScriptExists(scriptName);
+
+        const scriptReturned = runScriptPython(scriptName, componentChange[userComponent.changeField]);
         if (!scriptReturned) {
             throw new HandleError("Python script return error");
         }
@@ -23,9 +24,17 @@ module.exports.processComponentChange = (componentChange, userComponent, scriptN
     throw new HandleError("ChangeField does not exists!");
 }
 
-// Função para rodar o script Python
-module.exports.runScriptPython = (scriptName, data) => {
+function runScriptPython(scriptName, data) {
     const run = new runScript();
     const scriptResult = run.runPythonScript(scriptName, data);
     return scriptResult;
 }
+
+async function verifyScriptExists(scriptName) {
+    const files = await fs.readdir('./uploads_src');
+    if (!files.includes(scriptName)) {
+        throw new HandleError(`Script "${scriptName}" not found`);
+    }
+
+    return true;
+}   

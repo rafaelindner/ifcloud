@@ -2,18 +2,15 @@ const apiRequest = require("../ApiRequest");
 const runScript = require("../RunPythonScript");
 const path = require('path');
 const { validateForm } = require("../operations/validations/formValidation");
-const HandleError = require("../operations/erros/HandleError");
-const { getComponentChange, processComponentChange } = require("../operations/support/operationStarter");
+const { getComponentChange, processComponentChange } = require("../operations/support/operationStarterSupport");
 const fs = require('fs').promises;
 
 
 class OperationController{
     async operationStarter(req, res){
         try{
-            // Validação dos dados do formulário
             validateForm(req.body);
 
-            // Pega os dados somente passarem na validação
             const { resourceType, id, scriptName, returnOnlyFieldsComponents, components } = req.body;
             
             const { data } = await apiRequest.get(resourceType+'/'+id);
