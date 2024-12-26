@@ -1,15 +1,15 @@
 const apiRequest = require("../ApiRequest");
 const runScript = require("../RunPythonScript");
 const path = require('path');
-const { validateForm } = require("../operations/validations/formValidation");
 const { getComponentChange, processComponentChange } = require("../operations/support/operationStarterSupport");
+const { validateFormOperationStarter } = require("../operations/validations/operationStarterValidation");
 const fs = require('fs').promises;
 
 
 class OperationController{
     async operationStarter(req, res){
         try{
-            validateForm(req.body);
+            validateFormOperationStarter(req.body);
 
             const { resourceType, id, scriptName, returnOnlyFieldsComponents, components } = req.body;
             

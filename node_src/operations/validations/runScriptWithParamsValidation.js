@@ -6,9 +6,10 @@ const schema = Joi.object({
         "any.required": "scriptName is required!",
         "string.base": "scriptName must be a string!"
     }),
-    params: Joi.array().required().messages({
+    params: Joi.array().min(1).required().messages({
         "any.required": "params is required!",
-        "array.base": "params must be an array!"
+        "array.base": "params must be an array!",
+        "array.min": "components must contain at least one item!"
     })
 });
 

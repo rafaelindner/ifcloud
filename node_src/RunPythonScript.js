@@ -3,9 +3,18 @@ const {
 } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const { log } = require('console');
+const fsPrimises = require('fs/promises');
+const HandleError = require('./operations/erros/HandleError');
 
 module.exports = class RunPythonScript {
+    async verifyScriptExists(scriptName) {
+        const files = await fsPrimises.readdir('./uploads_src');
+        if (!files.includes(scriptName)) {
+            throw new HandleError(`Script "${scriptName}" not found`);
+        }
+
+        return true;
+    }   
 
     runPythonScriptFromFile(scriptName, params) {
 

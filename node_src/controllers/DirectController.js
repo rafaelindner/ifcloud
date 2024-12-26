@@ -1,4 +1,5 @@
 const HandleError = require("../operations/erros/HandleError");
+const { processParamFilter } = require("../operations/support/runScriptWithParamsSuport");
 const { validateFormRunScriptWithParams } = require("../operations/validations/runScriptWithParamsValidation");
 const runScript = require("../RunPythonScript");
 const fs = require('fs/promises');
@@ -25,21 +26,10 @@ class DirectController{
     async runScriptWithParams(req, res){
         try {
             validateFormRunScriptWithParams(req.body);
+            
+            const { scriptName, params } = req.body;
 
-            const run = new runScript();
-
-            const scriptName = req.body.scriptName;
-            const params = req.body.params;
-
-            const files = await fs.readdir('./uploads_src');
-            if (!files.includes(scriptName)) {
-                throw new HandleError(`Script "${scriptName}" not found`);
-            }
-
-            let proccessedData = params.map((param) => {
-                    const result = run.runPythonScript(scriptName, param);
-                    return result.trim();
-            });
+            const proccessedData = await processParamFilter(scriptName, params);
 
             return res.send(proccessedData);
         } catch (e) {

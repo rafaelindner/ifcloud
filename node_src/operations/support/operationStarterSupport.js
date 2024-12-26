@@ -11,9 +11,7 @@ module.exports.getComponentChange = (components, index) => {
 
 module.exports.processComponentChange = async (componentChange, userComponent, scriptName) => {
     if (componentChange[userComponent.changeField]) {
-        await verifyScriptExists(scriptName);
-
-        const scriptReturned = runScriptPython(scriptName, componentChange[userComponent.changeField]);
+        const scriptReturned = await runScriptPython(scriptName, componentChange[userComponent.changeField]);
         if (!scriptReturned) {
             throw new HandleError("Python script return error");
         }
@@ -24,17 +22,9 @@ module.exports.processComponentChange = async (componentChange, userComponent, s
     throw new HandleError("ChangeField does not exists!");
 }
 
-function runScriptPython(scriptName, data) {
+async function runScriptPython(scriptName, data) {
     const run = new runScript();
+    await run.verifyScriptExists(scriptName);
     const scriptResult = run.runPythonScript(scriptName, data);
     return scriptResult;
 }
-
-async function verifyScriptExists(scriptName) {
-    const files = await fs.readdir('./uploads_src');
-    if (!files.includes(scriptName)) {
-        throw new HandleError(`Script "${scriptName}" not found`);
-    }
-
-    return true;
-}   

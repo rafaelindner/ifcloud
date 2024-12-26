@@ -18,7 +18,7 @@ const schema = Joi.object({
         "any.required": "returnOnlyFieldsComponents is required!",
         "boolean.base": "returnOnlyFieldsComponents must be a boolean value!"
     }),
-    components: Joi.array().items(
+    components: Joi.array().min(1).items(
         Joi.object({
             index: Joi.number().integer().required().messages({
                 "any.required": "index is required!",
@@ -32,7 +32,8 @@ const schema = Joi.object({
         })
     ).required().messages({
         "any.required": "components is required!",
-        "array.base": "components must be an array!"
+        "array.base": "components must be an array!",
+        "array.min": "components must contain at least one item!"
     })
 });
 
