@@ -5,6 +5,7 @@ const { getComponentChange, processComponentChange } = require("../operations/su
 const { validateFormOperationStarter } = require("../operations/validations/operationStarterValidation");
 const { log } = require("console");
 const { validateForm } = require("../operations/validations/validationForm");
+const { getComponentChangeForm, processComponentChangeForm } = require("../operations/support/form");
 const fs = require('fs').promises;
 
 
@@ -39,44 +40,91 @@ class OperationController{
     async myForm(req, res){
         try{
             req.body.onlyComponent = req.body.onlyComponent !== "0";
-            validateForm(req.body, res);
+
+            const errors = validateForm(req.body);
+            if (errors) {
+                return res.send(`Validation Errors:<br> ${errors}`);
+            }
 
             const { resourceType, resourceId, scriptName, componentIndex, changeField, onlyComponent } = req.body;
-            
+
             const { data } = await apiRequest.get(resourceType+'/'+resourceId);
             
             const fhirComponents = data.component;
             const arrFilteredComponents = [];
+            let response = {
+                "resourceType": resourceType,
+                 "id": ""+resourceId,
+                 "scriptName": scriptName,
+                 "returnOnlyFieldsComponent": onlyComponent,
+                 "components": []
+            }
 
-            changeField.forEach((e, i) => {
-                console.log(e, componentIndex[i]);
-            })
+
+            for (let fieldIndex = 0; fieldIndex < changeField.length; fieldIndex++) {
+                const componentChange = getComponentChangeForm(fhirComponents, componentIndex[fieldIndex], changeField[fieldIndex]);
+                
+                if (!componentChange) {
+                    return res.send('Index or changeField does not exists!');
+                }
+
+                response.components.push({
+                    "index": componentIndex[fieldIndex],
+                    "changeField": changeField[fieldIndex],
+                    "originalComponent": componentChange[changeField[fieldIndex]]
+                });
+
+                // OperationController.createTXT(componentChange[changeField]);
+
+                const updatedComponent = await processComponentChangeForm(componentChange, changeField[fieldIndex], scriptName);
+
+                if (Array.isArray(updatedComponent) && !updatedComponent[0]) {
+                    return res.send(updatedComponent[1]);
+                }
+
+                if (onlyComponent) {
+                    arrFilteredComponents.push(updatedComponent);
+                }
+            }
+
+            if(onlyComponent){
+                console.log("");
+                console.log("");
+                console.log(arrFilteredComponents);
+
+                console.log("");
+                console.log("");
+
+                console.log(response);
+                console.log("");
+                console.log("");
+                
+                
+                
+                return res.send("AE, foi");
+                // return res.render('form_example', {data: components[componentIndex], response});
+            }
+
+            return res.send({...data});
+
+            // console.log("PASSOU EM TUDO");
+            
+
+
+            // console.log(response);
+            
+            // return res.send("PASSOU EM TUDO");
+
 
             // for(const component of components) {
-            //     const componentChange = getComponentChange(fhirComponents, component.index);
-            //     const updatedComponent = await processComponentChange(componentChange, component, scriptName);
+            //     
+            //     const updatedComponent = await processComponentChange(res, componentChange, field, scriptName);
 
             //     if (returnOnlyFieldsComponents) {
             //         arrFilteredComponents.push(updatedComponent);
             //     }
             // }
 
-            return res.send("AQUI");
-
-
-            // var components = data.component;
-
-            // var response = {
-            //     "resourceType": resourceType,
-            //      "id": ""+id,
-            //      "scriptName": scriptName,
-            //      "component": {
-            //        "index": ""+componentIndex,
-            //        "changeField": changeField,
-            //        "returnOnlyFieldsComponent": returnOnlyFieldComponent
-            //      },
-            //      "originalComponent": components[componentIndex]['valueSampledData'][changeField]
-            // }
 
             // if(componentIndex && changeField){
             //     if(components[componentIndex]){
@@ -115,8 +163,8 @@ class OperationController{
             // return res.send({...data});
         }catch(e){
             console.log(e);
-            // return res.send("ERROR");
-            return res.status(e.statusCode || 500).json(e || "Internal server error");
+            return res.send("ERROR");
+            // return res.status(e.statusCode || 500).json(e || "Internal server error");
         }
     }
 

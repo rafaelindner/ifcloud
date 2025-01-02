@@ -41,12 +41,14 @@ const schema = Joi.object({
         })
 });
 
-module.exports.validateForm = (data, res) => {
+module.exports.validateForm = (data) => {
     const { error } = schema.validate(data, { abortEarly: false });
 
     if (error) {
         const errorText = error.details.map(detail => `- ${detail.message}`).join('<br>');
 
-        return res.status(400).send(`Validation Errors:<br>   ${errorText}`);
+        return errorText;
     }
+
+    return null
 };
