@@ -88,82 +88,13 @@ class OperationController{
             }
 
             if(onlyComponent){
-                console.log("");
-                console.log("");
-                console.log(arrFilteredComponents);
-
-                console.log("");
-                console.log("");
-
-                console.log(response);
-                console.log("");
-                console.log("");
-                
-                
-                
-                return res.send("AE, foi");
-                // return res.render('form_example', {data: components[componentIndex], response});
+                return res.render('form_example', {data: arrFilteredComponents, response});
             }
 
             return res.send({...data});
-
-            // console.log("PASSOU EM TUDO");
-            
-
-
-            // console.log(response);
-            
-            // return res.send("PASSOU EM TUDO");
-
-
-            // for(const component of components) {
-            //     
-            //     const updatedComponent = await processComponentChange(res, componentChange, field, scriptName);
-
-            //     if (returnOnlyFieldsComponents) {
-            //         arrFilteredComponents.push(updatedComponent);
-            //     }
-            // }
-
-
-            // if(componentIndex && changeField){
-            //     if(components[componentIndex]){
-            //         var componentChange = components[componentIndex]['valueSampledData'];
-            //         var componentChange = components[componentIndex]['valueSampledData'];
-            //     }else{
-            //         return res.send("ERROR-03 !!! \"Index\" does not exist !!!");
-            //     }
-
-            //     // //POR AQUI A FUNCAO PRA CRIAR UM ARQUIVO ECG.TXT.... TODA VEZ QUE TRATA O FORM, SOBRE ESCREVE """ok"
-            //     // function creatTXT(){
-                    
-            //     // }
-
-            //     OperationController.createTXT(componentChange[changeField]);
-                
-            //     if(componentChange[changeField]){
-            //         var scriptReturned = run.runPythonScript(scriptName, componentChange[changeField]);
-            //         if(scriptReturned){
-            //             scriptReturned = scriptReturned.replace(/(\r\n|\n|\r)/gm, "");
-            //         }else{
-            //             return res.send("!!! python script return error !!!")
-            //         }
-            //         componentChange[changeField] = scriptReturned;
-            //     }else{
-            //         return res.send("ERROR-04 !!! \"ChangeField\" does not exist !!!");
-            //     }
-            // }else{
-            //     return res.send("ERROR-04 !!! Empty \"Index\" or \"ChangeField\" field !!!");
-            // }
-
-            // if(returnOnlyFieldComponent){
-            //     return res.render('form_example', {data: components[componentIndex], response});
-            // }
-
-            // return res.send({...data});
         }catch(e){
             console.log(e);
-            return res.send("ERROR");
+            return res.send("Internal server error");
             // return res.status(e.statusCode || 500).json(e || "Internal server error");
         }
     }

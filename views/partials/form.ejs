@@ -23,20 +23,13 @@
                 <input id="script_name" type="text" name="scriptName" >
             </div>
 
-            <div class="line">
+            <!-- Primeira instância de componentData -->
+            <div class="line componentData">
                 <label>Component Index</label>
-                <input id="component_index" type="text" name="componentIndex">
+                <input id="component_index" type="text" name="componentIndex[]">
 
                 <label>Change Field</label>
-                <input id="change_field" type="text" name="changeField">
-            </div>
-
-            <div class="line">
-                <label>Component Index</label>
-                <input id="component_index" type="text" name="componentIndex">
-
-                <label>Change Field</label>
-                <input id="change_field" type="text" name="changeField">
+                <input id="change_field" type="text" name="changeField[]">
             </div>
 
             <div class="line">
@@ -47,9 +40,57 @@
                 </select>
             </div>
 
+            <div id="actions" class="line">
+                <button type="button" id="addComponent" class="btn">Adicionar Componente</button>
+            </div>
+
             <div id="send" class="line">
-                <input type="submit" id="btn_send" >
+                <input type="submit" id="btn_send">
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    const addComponentButton = document.getElementById('addComponent');
+    const form = document.getElementById('json_form');
+    const returnOnlyFields = document.querySelector('.line select#only_component');
+
+    addComponentButton.addEventListener('click', () => {
+        const newComponentData = document.createElement('div');
+        newComponentData.classList.add('line', 'componentData');
+
+        newComponentData.innerHTML = `
+            <label>Component Index</label>
+            <input type="text" name="componentIndex[]">
+
+            <label>Change Field</label>
+            <input type="text" name="changeField[]">
+
+            <button type="button" class="removeComponent btn">Remover</button>
+        `;
+
+        form.insertBefore(newComponentData, returnOnlyFields.parentElement);
+
+        const removeButton = newComponentData.querySelector('.removeComponent');
+        removeButton.addEventListener('click', () => {
+            const allComponents = document.querySelectorAll('.componentData');
+            if (allComponents.length > 1) {
+                newComponentData.remove();
+            } else {
+                alert('O formulário deve conter pelo menos um componente.');
+            }
+        });
+    });
+
+    document.querySelectorAll('.componentData .removeComponent').forEach(button => {
+        button.addEventListener('click', function () {
+            const componentDataElements = document.querySelectorAll('.componentData');
+            if (componentDataElements.length > 1) {
+                this.parentElement.remove();
+            } else {
+                alert('O formulário deve conter pelo menos um componente.');
+            }
+        });
+    });
+</script>

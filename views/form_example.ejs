@@ -28,20 +28,28 @@
                             &nbsp;&nbsp;resourceType: '<%- response.resourceType %>',<br>
                             &nbsp;&nbsp;id: '<%- response.id %>',<br>
                             &nbsp;&nbsp;scriptName: '<%- response.scriptName %>',<br>
-                            &nbsp;&nbsp;component: {<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;index: '<%- response.component.index %>',<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;changeField: '<%- response.component.changeField %>',<br>
-                                &nbsp;&nbsp;&nbsp;&nbsp;returnOnlyFieldsComponent: <%- response.component.returnOnlyFieldsComponent %><br>
-                            &nbsp;&nbsp;}<br>   
+                            &nbsp;&nbsp;components: [<br>
+                                <% response.components.forEach((component, index) => { %>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index: '<%- component.index %>',<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;changeField: '<%- component.changeField %>',<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returnOnlyFieldsComponent: <%- response.returnOnlyFieldsComponent %><br>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;}<% if (index < response.components.length - 1) { %>,<br><% } %>
+                                <% }) %>
+                            <br>
+                                &nbsp;&nbsp;]
+                            <br>
                         }
-                    </p>
+                    </p>                    
                 </div>
 
                 <div id="json" class="line">
-                    <p>
-                        Campo Original: <%- response.originalComponent %><br>
-                        Campo a ser Alterado: <%- response.component.changeField %><br>
-                    </p>
+                    <% response.components.forEach((component, index) => { %>
+                        <p>
+                        Campo Original: <%- component.originalComponent %><br>
+                        Campo a ser Alterado: <%- component.changeField %><br>
+                        </p>
+                    <% }) %>
                 </div>
             <% 
             } 
@@ -50,7 +58,7 @@
 
         <div id="card">
             <div class="line">
-                <h2>Campo Alterado</h2>
+                <h2>Campo(s) Alterado(s)</h2>
             </div>
 
             <%
@@ -58,14 +66,16 @@
                 console.log(data.valueSampledData);
             %>
             <div id="json" class="line">
-                <p>
-                    Period: <%- data.valueSampledData.period %><br>
-                    Factor: <%- data.valueSampledData.factor %><br>
-                    LowerLimit: <%- data.valueSampledData.lowerLimit %><br>
-                    UpperLimit: <%- data.valueSampledData.upperLimit %><br>
-                    Dimensions: <%- data.valueSampledData.dimensions %><br>
-                    Data: <%- data.valueSampledData.data %><br>
-                </p>
+                <% data.forEach((element, index) => { %>
+                    <p class="line">
+                        Period: <%- element.period %><br>
+                        Factor: <%- element.factor %><br>
+                        LowerLimit: <%- element.lowerLimit %><br>
+                        UpperLimit: <%- element.upperLimit %><br>
+                        Dimensions: <%- element.dimensions %><br>
+                        Data: <%- element.data %><br>
+                    </p>
+                <% }) %>
             </div>
             <%
             }

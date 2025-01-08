@@ -3,7 +3,7 @@ const runScript = require("../../RunPythonScript");
 const fsPrimises = require('fs/promises');
 
 module.exports.getComponentChangeForm = (components, index) => {
-    if (components[index].valueSampledData) {
+    if (Array.isArray(components) && components[index] && components[index].valueSampledData) {
         return components[index].valueSampledData;
     }
     return null;
