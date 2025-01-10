@@ -34,10 +34,6 @@ module.exports = class RunPythonScript {
     // }
 
     runPythonScript(scriptName, params) {
-        console.log("\n\n\n\n");
-        console.log(params);
-        
-        
         //Caminho base para o upload
         const dirPath = './uploads_src/temp';
         //Pega o timestamp atual
@@ -54,30 +50,9 @@ module.exports = class RunPythonScript {
             }
 
             //Escreve no arquivo txt os dados dos parâmetros da função
-            fs.writeFileSync(paramsFile, params, {
+            fs.writeFileSync(paramsFile, JSON.stringify(params), {
                 encoding: 'utf8'
             });
-
-//             // Caminho completo do script Python
-//             const scriptPath = `./uploads_src/${scriptName}`;
-            
-//             // Leitura do conteúdo do script original
-//             const originalScriptContent = fs.readFileSync(scriptPath, 'utf8');
-
-//             // Adição das linhas necessárias
-//             const modifiedScriptContent = `
-// from helpers.file_utils import read_params_file
-// import sys
-
-// params_file = sys.argv[1]
-// data = read_params_file(params_file)
-
-//             ${originalScriptContent}`;
-
-//             // Escreve o conteúdo modificado de volta no arquivo
-//             fs.writeFileSync(scriptPath, modifiedScriptContent, {
-//                 encoding: 'utf8'
-//             });
 
             //Executa o script py
             const response = execSync(
@@ -86,7 +61,10 @@ module.exports = class RunPythonScript {
                 }
             );
 
-            return response;
+            const processedFilePath = response.trim();
+            const processedData = JSON.parse(fs.readFileSync(processedFilePath, 'utf8'));
+            
+            return processedData;
         } catch (e) {
             console.log(e);
         } finally {

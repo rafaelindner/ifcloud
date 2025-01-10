@@ -4,12 +4,7 @@ module.exports.processParamFilter = async (scriptName, params) => {
     await verifyScriptExists(scriptName);
     const run = new RunPythonScript();
 
-    let proccessedData = params.map((param) => {
-        const result = run.runPythonScript(scriptName, param);
-        return result.trim();
-    });
-
-    return proccessedData;
+    return run.runPythonScript(scriptName, params);
 }
 
 async function verifyScriptExists(scriptName) {

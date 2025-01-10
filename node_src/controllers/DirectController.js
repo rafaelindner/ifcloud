@@ -29,9 +29,9 @@ class DirectController{
             
             const { scriptName, params } = req.body;
 
-            const proccessedData = await processParamFilter(scriptName, params);
+            const processedData = await processParamFilter(scriptName, params);
 
-            return res.send(proccessedData);
+            return res.send(processedData);
         } catch (e) {
             console.log(e);
             return res.status(e.statusCode || 500).json(e);

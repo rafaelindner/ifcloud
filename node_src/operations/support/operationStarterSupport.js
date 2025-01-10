@@ -9,22 +9,26 @@ module.exports.getComponentChange = (components, index) => {
     throw new HandleError('Index does not exists!');
 }
 
-module.exports.processComponentChange = async (componentChange, userComponent, scriptName) => {
-    if (componentChange[userComponent.changeField]) {
-        const scriptReturned = await runScriptPython(scriptName, componentChange[userComponent.changeField]);
-        if (!scriptReturned) {
-            throw new HandleError("Python script return error");
-        }
+module.exports.processComponentChange = async (components, scriptName) => {
+    const scriptReturned = await runScriptPython(scriptName, components);
+    
+    if (!scriptReturned) {
+        throw new HandleError("Python script return error");
+    }
 
-        componentChange[userComponent.changeField] = scriptReturned.replace(/(\r\n|\n|\r)/gm, "");
-        return componentChange;
+    return scriptReturned;
+}
+
+module.exports.getDataFromComponent = (componentChange, userComponent) => {
+    if (componentChange[userComponent.changeField]) {
+        return componentChange[userComponent.changeField];
     }
     throw new HandleError("ChangeField does not exists!");
 }
 
-async function runScriptPython(scriptName, data) {
+async function runScriptPython(scriptName, components) {
     const run = new runScript();
     await run.verifyScriptExists(scriptName);
-    const scriptResult = run.runPythonScript(scriptName, data);
+    const scriptResult = run.runPythonScript(scriptName, components);
     return scriptResult;
 }

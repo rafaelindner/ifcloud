@@ -1,17 +1,18 @@
 const apiRequest = require("../ApiRequest");
 const runScript = require("../RunPythonScript");
 const path = require('path');
-const { getComponentChange, processComponentChange } = require("../operations/support/operationStarterSupport");
+const { getComponentChange, processComponentChange, getDataFromComponent } = require("../operations/support/operationStarterSupport");
 const { validateFormOperationStarter } = require("../operations/validations/operationStarterValidation");
 const { log } = require("console");
 const { validateForm } = require("../operations/validations/validationForm");
-const { getComponentChangeForm, processComponentChangeForm } = require("../operations/support/form");
+const { getComponentChangeForm, processComponentChangeForm, getDataFromComponentForm } = require("../operations/support/form");
 const fs = require('fs').promises;
 
 
 class OperationController{
     async operationStarter(req, res){
         try{
+
             validateFormOperationStarter(req.body);
 
             const { resourceType, id, scriptName, returnOnlyFieldsComponents, components } = req.body;
@@ -20,16 +21,25 @@ class OperationController{
 
             const fhirComponents = data.component;
             const arrFilteredComponents = [];
+            const arrDataComponents = [];
+            const arrComponentsChanges = [];
             
             for(const component of components) {
                 const componentChange = getComponentChange(fhirComponents, component.index);
-                const updatedComponent = await processComponentChange(componentChange, component, scriptName);
-
-                if (returnOnlyFieldsComponents) {
-                    arrFilteredComponents.push(updatedComponent);
-                }
+                arrComponentsChanges.push(componentChange);
+                arrDataComponents.push(getDataFromComponent(componentChange, component));
             }
 
+            const processedData = await processComponentChange(arrDataComponents, scriptName);
+
+            components.forEach((component, index) => {
+                arrComponentsChanges[index][component.changeField] = processedData[index].join(" ").replace(/(\r\n|\n|\r)/gm, "");
+                
+                if (returnOnlyFieldsComponents) {
+                    arrFilteredComponents.push(arrComponentsChanges[index]);
+                }
+            });
+            
             return res.json(returnOnlyFieldsComponents ? arrFilteredComponents : data);
 
         }catch(e){
@@ -52,6 +62,8 @@ class OperationController{
             
             const fhirComponents = data.component;
             const arrFilteredComponents = [];
+            const arrComponentsChanges = [];
+            const arrDataComponents = [];
             let response = {
                 "resourceType": resourceType,
                  "id": ""+resourceId,
@@ -60,12 +72,10 @@ class OperationController{
                  "components": []
             }
 
-
             for (let fieldIndex = 0; fieldIndex < changeField.length; fieldIndex++) {
-                const componentChange = getComponentChangeForm(fhirComponents, componentIndex[fieldIndex], changeField[fieldIndex]);
-                
-                if (!componentChange) {
-                    return res.send('Index or changeField does not exists!');
+                const componentChange = getComponentChangeForm(fhirComponents, componentIndex[fieldIndex]);
+                if (Array.isArray(componentChange) && !componentChange[0]) {
+                    return res.send(componentChange[1]);
                 }
 
                 response.components.push({
@@ -74,16 +84,22 @@ class OperationController{
                     "originalComponent": componentChange[changeField[fieldIndex]]
                 });
 
-                // OperationController.createTXT(componentChange[changeField]);
-
-                const updatedComponent = await processComponentChangeForm(componentChange, changeField[fieldIndex], scriptName);
-
-                if (Array.isArray(updatedComponent) && !updatedComponent[0]) {
-                    return res.send(updatedComponent[1]);
+                arrComponentsChanges.push(componentChange);
+                const dataFromComponent = getDataFromComponentForm(componentChange, changeField[fieldIndex]);
+                if (Array.isArray(dataFromComponent) && !dataFromComponent[0]) {
+                    return res.send(dataFromComponent[1]);
                 }
+                arrDataComponents.push(dataFromComponent);
+
+            }
+
+            const processedData = await processComponentChangeForm(arrDataComponents, scriptName);
+
+            for (let fieldIndex = 0; fieldIndex < changeField.length; fieldIndex++) {
+                arrComponentsChanges[fieldIndex][changeField[fieldIndex]] = processedData[fieldIndex].join(" ").replace(/(\r\n|\n|\r)/gm, "");
 
                 if (onlyComponent) {
-                    arrFilteredComponents.push(updatedComponent);
+                    arrFilteredComponents.push(arrComponentsChanges[fieldIndex]);
                 }
             }
 

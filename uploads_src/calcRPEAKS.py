@@ -1,12 +1,8 @@
 import json
 import numpy as np
-from biosppy import storage
 from biosppy.signals import ecg
-import os
 import sys
-# from pymongo import MongoClient
-from bson.objectid import ObjectId
-from helpers.file_utils import read_params_file
+from helpers.file_utils import read_params_file, write_params_file
 
 class NDArrayEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -14,21 +10,22 @@ class NDArrayEncoder(json.JSONEncoder):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
 
-if __name__ == '__main__':
+def main():
     params_file = sys.argv[1]
     data = read_params_file(params_file)
-    signal = np.array([float(i) for i in data.split()])
+    signals = [np.array([float(i) for i in signal.split()]) for signal in data]
     
-    # process it and plot
-    out = ecg.ecg(signal=signal, sampling_rate=360, show=False)
+    results = []
+    for signal in signals:
+        out = ecg.ecg(signal=signal, sampling_rate=360, show=False)
+        heart_rate = out["rpeaks"].tolist()
+
+        results.append(heart_rate)
     
-    json_str = json.dumps({"filtered" : out['filtered'], 'rpeaks': out["rpeaks"],'bpm' :out["heart_rate"], "rate": 360}, cls=NDArrayEncoder, indent=4)
-
-    data = out["rpeaks"]
+    json_results = json.dumps(results, cls=NDArrayEncoder, indent=4)
+    write_params_file(params_file, json_results)
     
-    string_data = ' '.join(map(str, data))
-    print(string_data)
+    print(params_file)
 
-
-# with open('joined_filtered_100m.txt', 'w') as convert_file: 
-#      convert_file.write(json_str)
+if __name__ == '__main__':
+    main()
